@@ -42,7 +42,8 @@ namespace TheSalesTracker
 
             string salespersonInfo;
             string[] salespersonInfoArray;
-            List<City> citiesTraveled;
+            //List<City> citiesTraveled;
+            List<string> citiesTraveled = new List<string>();
 
             // instantiate a FileStream object for writing
             FileStream rfileStream = File.OpenRead(DataSettings.dataFilePathCsv);
@@ -77,6 +78,12 @@ namespace TheSalesTracker
             salesperson.CurrentStock.OnBackorder = Convert.ToBoolean(salespersonInfoArray[5]);
 
             //salesperson.CitiesVisited = citiesTraveled.Split(',').ToList();
+            //salesperson.CitiesVisited.
+
+            foreach (City c in salesperson.CitiesVisited)
+            {
+                citiesTraveled.Add(c.ToString());
+            }
 
             return salesperson;
         }
@@ -107,6 +114,18 @@ namespace TheSalesTracker
             //{
             //    sb.Append(city + delineator);
             //}
+
+            List<string> citiesTraveled = new List<string>();
+
+            foreach (City c in salesperson.CitiesVisited)
+            {
+                citiesTraveled.Add(c.ToString());
+            }
+
+            foreach (string city in citiesTraveled)
+            {
+                sb.Append(city + delineator);
+            }
 
             // remove the last delineator
             if (sb.Length != 0)

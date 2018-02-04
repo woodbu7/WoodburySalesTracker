@@ -35,12 +35,10 @@ namespace TheSalesTracker
                 LastName = "Woodbury",
                 AccountID = "woody123",
                 CurrentStock = new Product(Product.ProductType.Treadmill, 50, false),
-                //CitiesVisited = new List<string>()
-                //{
-                //    "Oslo",
-                 //   "London",
-                   // "Reykjavik"
-                //}
+                CitiesVisited = new List<City>()
+                {
+                    
+                }
 
             };
 

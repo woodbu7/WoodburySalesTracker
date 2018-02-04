@@ -481,7 +481,8 @@ namespace TheSalesTracker
             else
             {
                 // note use of ternary operator (takes three arguments)
-                return userResponse == "YES" ? true : false;
+                //return userResponse == "YES" ? true : false;
+                return true;
             }
         }
 
@@ -513,7 +514,8 @@ namespace TheSalesTracker
             else
             {
                 // note use of ternary operator (takes three arguments)
-                return userResponse == "YES" ? true : false;
+                //return userResponse == "YES" ? true : false;
+                return true;
             }
         }
 
