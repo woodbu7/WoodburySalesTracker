@@ -517,12 +517,141 @@ namespace TheSalesTracker
         }
 
         /// <summary>
+        /// This methods prompts the user for products and adds them to the list
+        /// </summary>
+        /// <param name="salesperson"></param>
+        /// <returns></returns>
+        public List<Product> DisplayGetProducts(Salesperson salesperson)
+        {
+            salesperson.CurrentStock = new List<Product>();
+            bool keepAdding = true;
+            string userResponse;
+            bool maxAttemptsExceeded = false;
+
+            ConsoleUtil.HeaderText = "Buy Products";
+            ConsoleUtil.DisplayReset();
+
+            while (keepAdding)
+            {
+                ConsoleUtil.DisplayMessage("Available Product Types: ");
+                ConsoleUtil.DisplayMessage("");
+
+                // list all types of products available
+                // Enum.GetNames retrieves an array of the names in ProductType
+                foreach (string productName in Enum.GetNames(typeof(Product.ProductType)))
+                {
+                    // do not display "None" product type
+                    if (productName != "None")
+                    {
+                        ConsoleUtil.DisplayMessage(productName);
+                    }
+
+                }
+
+                // get product type from user, if input is invalid: product type will be set to "None"
+                ConsoleUtil.DisplayMessage("");
+                ConsoleUtil.DisplayPromptMessage("Enter the product you wish to add: ");
+
+                // new variable for product type
+                //Product.ProductType productType;
+                if (Enum.TryParse<Product.ProductType>(UppercaseFirst(Console.ReadLine()), out Product.ProductType productType))
+                {
+                    bool notInStock = false;
+                    foreach (Product product in salesperson.CurrentStock)
+                    {
+                        if (product.Type == productType)
+                        {
+                            notInStock = true;
+                        }
+                    }
+                    if (!notInStock)
+                    {
+                        // get number of products
+                        if (ConsoleValidator.TryGetIntegerFromUser(MINIMUM_BUYSELL_AMOUNT, MAXIMUM_BUYSELL_AMOUNT, MAXIMUM_ATTEMPTS, productType.ToString(), out int numberOfUnits))
+                        {
+
+                            // add product to current stock list
+                            salesperson.CurrentStock.Add(new Product(productType, numberOfUnits, false));
+
+                            userResponse = ConsoleValidator.GetYesNoFromUser(MAXIMUM_ATTEMPTS, "Do you wish to continue adding products?", out maxAttemptsExceeded);
+                            ConsoleUtil.DisplayReset();
+
+                            if (maxAttemptsExceeded || userResponse == "NO")
+                            {
+                                // exit the while loop
+                                keepAdding = false;
+
+                                DisplayContinuePrompt();
+                            }
+
+
+                        }
+                        else
+                        {
+                            ConsoleUtil.DisplayMessage("It appears you are having difficulty setting the number of products in your stock.");
+                            ConsoleUtil.DisplayMessage("By default, the number of products in your inventory are now set to 0.");
+
+                            // add product to current stock list with default number of units set to 0
+                            salesperson.CurrentStock.Add(new Product(productType, 0, false));
+
+                            userResponse = ConsoleValidator.GetYesNoFromUser(MAXIMUM_ATTEMPTS, "Do you wish to continue adding products?", out maxAttemptsExceeded);
+                            ConsoleUtil.DisplayReset();
+
+                            if (maxAttemptsExceeded || userResponse == "NO")
+                            {
+                                // exit the while loop
+                                keepAdding = false;
+
+                                DisplayContinuePrompt();
+                            }
+
+
+                        }
+                    }
+                    else
+                    {
+                        ConsoleUtil.DisplayMessage(productType.ToString() + " already exist in your inventory.");
+
+                        userResponse = ConsoleValidator.GetYesNoFromUser(MAXIMUM_ATTEMPTS, "Do you wish to continue adding products?", out maxAttemptsExceeded);
+                        ConsoleUtil.DisplayReset();
+
+                        if (maxAttemptsExceeded || userResponse == "NO")
+                        {
+                            // exit the while loop
+                            keepAdding = false;
+
+                            DisplayContinuePrompt();
+                        }
+                    }
+
+
+                }
+                else
+                {
+                    // sets type of current stock to "none" product type
+                    ConsoleUtil.DisplayMessage("It appears you are having difficulty adding products to your inventory.");
+                    ConsoleUtil.DisplayMessage("By default, your inventory will be set to none.");
+
+                    salesperson.CurrentStock.Add(new Product(Product.ProductType.None, 0, false));
+
+                    // exit while loop
+                    keepAdding = false;
+
+                    DisplayContinuePrompt();
+                }
+
+            }
+
+            return salesperson.CurrentStock;
+        }
+
+        /// <summary>
         /// setup the new salesperson object with the initial data
         /// </summary>
         public Salesperson DisplaySetupAccount(out City city)
         {
             Salesperson salesperson = new Salesperson();
-            salesperson.CurrentStock = new List<Product>();
+            //salesperson.CurrentStock = new List<Product>();
 
             bool keepAdding = true;
             string userResponse;
@@ -554,94 +683,8 @@ namespace TheSalesTracker
             // add city object to salesperson
             salesperson.CitiesVisited.Add(city);
 
-
-            ConsoleUtil.DisplayMessage("Product Types: ");
-            ConsoleUtil.DisplayMessage("");
-
-            // list all types of products available
-            // Enum.GetNames retrieves an array of the names in ProductType
-            foreach (string productName in Enum.GetNames(typeof(Product.ProductType)))
-            {
-                // do not display "None" product type
-                if (productName != "None")
-                {
-                    ConsoleUtil.DisplayMessage(productName);
-                }
-
-            }
-
-            while (keepAdding)
-            {
-                // get product type from user, if input is invalid: product type will be set to "None"
-                ConsoleUtil.DisplayMessage("");
-                ConsoleUtil.DisplayPromptMessage("Enter your product: ");
-
-                // new variable for product type
-                //Product.ProductType productType;
-                if (Enum.TryParse<Product.ProductType>(UppercaseFirst(Console.ReadLine()), out Product.ProductType productType))
-                {
-                    if (salesperson.CurrentStock.Contains()
-                    {
-
-                    }
-                    // get number of products
-                    if (ConsoleValidator.TryGetIntegerFromUser(MINIMUM_BUYSELL_AMOUNT, MAXIMUM_BUYSELL_AMOUNT, MAXIMUM_ATTEMPTS, productType.ToString(), out int numberOfUnits))
-                    {
-                        
-                        // add product to current stock list
-                        salesperson.CurrentStock.Add(new Product(productType, numberOfUnits, false));
-
-                        userResponse = ConsoleValidator.GetYesNoFromUser(MAXIMUM_ATTEMPTS, "Do you wish to continue adding products?", out maxAttemptsExceeded);
-
-                        if (maxAttemptsExceeded || userResponse == "NO")
-                        {
-                            // exit the while loop
-                            keepAdding = false;
-
-                            DisplayContinuePrompt();
-                        }
-
-
-                    }
-                    else
-                    {
-                        ConsoleUtil.DisplayMessage("It appears you are having difficulty setting the number of products in your stock.");
-                        ConsoleUtil.DisplayMessage("By default, the number of products in your inventory are now set to 0.");
-
-                        // add product to current stock list with default number of units set to 0
-                        salesperson.CurrentStock.Add(new Product(productType, 0, false));
-
-                        userResponse = ConsoleValidator.GetYesNoFromUser(MAXIMUM_ATTEMPTS, "Do you wish to continue adding products?", out maxAttemptsExceeded);
-
-                        if (maxAttemptsExceeded || userResponse == "NO")
-                        {
-                            // exit the while loop
-                            keepAdding = false;
-
-                            DisplayContinuePrompt();
-                        }
-
-                    }
-
-                }
-                else
-                {
-                    // sets type of current stock to "none" product type
-                    ConsoleUtil.DisplayMessage("It appears you are having difficulty adding products to your inventory.");
-                    ConsoleUtil.DisplayMessage("By default, your inventory will be set to none.");
-
-                    salesperson.CurrentStock.Add(new Product(Product.ProductType.None, 0, false));
-
-                    // exit while loop
-                    keepAdding = false;
-
-                    DisplayContinuePrompt();
-                }
-
-            }
-            
-
-            ConsoleUtil.DisplayReset();
+            salesperson.CurrentStock = DisplayGetProducts(salesperson);
+           
 
             ConsoleUtil.DisplayMessage("Your account is setup");
             //ConsoleUtil.DisplayMessage(numberOfUnits + " units of " + productType + " have been added to your inventory.");
