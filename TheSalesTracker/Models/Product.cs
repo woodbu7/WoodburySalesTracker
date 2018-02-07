@@ -28,6 +28,7 @@ namespace TheSalesTracker
         private bool _onBackorder;
         private ProductType _type;
 
+
         #endregion
 
         #region Properties

@@ -16,10 +16,9 @@ namespace TheSalesTracker
         private string _firstName;
         private string _lastName;
         private string _accountID;
-        //private List<string> _citiesVisited;
         private List<City> _citiesVisited;
-        private Product _currentStock;
-        //private List<Product> _currentStock;
+        //private Product _currentStock;
+        private List<Product> _currentStock;
 
         #endregion
 
@@ -43,29 +42,23 @@ namespace TheSalesTracker
             set { _accountID = value; }
         }
 
-        //public List<string> CitiesVisited
-        //{
-        //    get { return _citiesVisited; }
-        //    set { _citiesVisited = value; }
-        //}
-
         public List<City> CitiesVisited
         {
             get { return _citiesVisited; }
             set { _citiesVisited = value; }
         }
 
-        public Product CurrentStock
-        {
-            get { return _currentStock; }
-            set { _currentStock = value; }
-        }
-
-        //public List<Product> CurrentStock
+        //public Product CurrentStock
         //{
-         //   get { return _currentStock; }
-          //  set { _currentStock = value; }
+        //    get { return _currentStock; }
+        //    set { _currentStock = value; }
         //}
+
+        public List<Product> CurrentStock
+        {
+           get { return _currentStock; }
+           set { _currentStock = value; }
+        }
 
         #endregion
 
@@ -74,7 +67,7 @@ namespace TheSalesTracker
         public Salesperson()
         {
             _citiesVisited = new List<City>();
-            _currentStock = new Product();
+            _currentStock = new List<Product>();
         }
 
         public Salesperson(string firstName, string lastName, string acountID)
@@ -84,7 +77,7 @@ namespace TheSalesTracker
             _accountID = acountID;
 
             _citiesVisited = new List<City>();
-            _currentStock = new Product();
+            _currentStock = new List<Product>();
         }
 
         #endregion

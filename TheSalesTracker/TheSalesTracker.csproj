@@ -43,9 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\Controller.cs" />
-    <Compile Include="DataAccessLayer\CsvServices.cs" />
+    <Compile Include="DataAccessLayer\XmlServices.cs" />
     <Compile Include="Data\DataSettings.cs" />
-    <Compile Include="Data\InitializeDataFileCsv.cs" />
+    <Compile Include="Data\InitializeDataFileXml.cs" />
     <Compile Include="Models\City.cs" />
     <Compile Include="Models\MenuOption.cs" />
     <Compile Include="Models\Product.cs" />
@@ -60,8 +60,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Data\Data.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="Data\Data.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ReadMe.txt" />
   </ItemGroup>

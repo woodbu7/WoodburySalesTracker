@@ -14,7 +14,7 @@ namespace TheSalesTracker
         #region Fields
 
         private const int MAXIMUM_ATTEMPTS = 3;
-        private const int MAXIMUM_BUYSELL_AMOUNT = 100;
+        private const int MAXIMUM_BUYSELL_AMOUNT = 1000;
         private const int MINIMUM_BUYSELL_AMOUNT = 0;
 
         #endregion
@@ -45,7 +45,7 @@ namespace TheSalesTracker
         private void InitializeConsole()
         {
             ConsoleUtil.WindowTitle = "Woodbury Productions";
-            ConsoleUtil.HeaderText = "The Traveling Salesperson Application";
+            ConsoleUtil.HeaderText = "The Sales Tracker";
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace TheSalesTracker
         /// </summary>
         public void DisplayAccountInfo(Salesperson salesperson)
         {
-            ConsoleUtil.HeaderText = "Account Info";
+            ConsoleUtil.HeaderText = "Account Information";
             ConsoleUtil.DisplayReset();
 
             DisplayAccountDetail(salesperson);
@@ -104,16 +104,12 @@ namespace TheSalesTracker
             ConsoleUtil.DisplayMessage("You have traveled to the following cities:");
             ConsoleUtil.DisplayMessage("");
 
-            //foreach (string city in salesperson.CitiesVisited)
-            //{
-            //    ConsoleUtil.DisplayMessage(city);
-            //}
 
             foreach (City c in salesperson.CitiesVisited)
             {
                 ConsoleUtil.DisplayMessage("City: " + c.CityName);
                 ConsoleUtil.DisplayMessage("Number of units sold: " + c.NumberOfProductsSold.ToString());
-                ConsoleUtil.DisplayMessage("NUmber of units bought: " + c.NumberOfProductsBought.ToString());
+                ConsoleUtil.DisplayMessage("Number of units bought: " + c.NumberOfProductsBought.ToString());
                 ConsoleUtil.DisplayMessage("");
             }
 
@@ -154,7 +150,7 @@ namespace TheSalesTracker
         /// </summary>
         public void DisplayConfirmSaveAccountInfo()
         {
-            ConsoleUtil.HeaderText = "Save Account";
+            ConsoleUtil.HeaderText = "Save Account Information";
             ConsoleUtil.DisplayReset();
 
             ConsoleUtil.DisplayMessage("Account information saved.");
@@ -290,9 +286,10 @@ namespace TheSalesTracker
             {
                 ConsoleUtil.DisplayMessage("It appears you are having difficulties setting the number of units to buy.");
                 ConsoleUtil.DisplayMessage("The number of units to sell will be set to it's default value of 0.");
-
+                
                 numberOfUnitsToSell = 0;
                 DisplayContinuePrompt();
+                
             }
 
             ConsoleUtil.DisplayReset();
@@ -467,7 +464,7 @@ namespace TheSalesTracker
             string userResponse;
             maxAttemptsExceeded = false;
 
-            ConsoleUtil.HeaderText = "Load Account";
+            ConsoleUtil.HeaderText = "Load Account Information";
             ConsoleUtil.DisplayReset();
 
             ConsoleUtil.DisplayMessage("");
@@ -522,11 +519,14 @@ namespace TheSalesTracker
         /// <summary>
         /// setup the new salesperson object with the initial data
         /// </summary>
-        public Salesperson DisplaySetupAccount()
+        public Salesperson DisplaySetupAccount(out City city)
         {
             Salesperson salesperson = new Salesperson();
+            salesperson.CurrentStock = new List<Product>();
 
-            //bool keepAdding = true;
+            bool keepAdding = true;
+            string userResponse;
+            bool maxAttemptsExceeded = false;
 
             ConsoleUtil.HeaderText = "Account Setup";
             ConsoleUtil.DisplayReset();
@@ -546,6 +546,14 @@ namespace TheSalesTracker
             salesperson.AccountID = Console.ReadLine();
             ConsoleUtil.DisplayMessage("");
 
+            ConsoleUtil.DisplayPromptMessage("Enter your starting city: ");
+            city = new City();
+            city.CityName = Console.ReadLine();
+            city.NumberOfProductsSold = 0;
+           
+            // add city object to salesperson
+            salesperson.CitiesVisited.Add(city);
+
 
             ConsoleUtil.DisplayMessage("Product Types: ");
             ConsoleUtil.DisplayMessage("");
@@ -562,43 +570,81 @@ namespace TheSalesTracker
 
             }
 
-            // get product type from user, if input is invalid: product type will be set to "None"
-            ConsoleUtil.DisplayMessage("");
-            ConsoleUtil.DisplayPromptMessage("Enter your product: ");
+            while (keepAdding)
+            {
+                // get product type from user, if input is invalid: product type will be set to "None"
+                ConsoleUtil.DisplayMessage("");
+                ConsoleUtil.DisplayPromptMessage("Enter your product: ");
 
-            // new variable for product type
-            //Product.ProductType productType;
-            if (Enum.TryParse<Product.ProductType>(UppercaseFirst(Console.ReadLine()), out Product.ProductType productType))
-            {
-                // set type of current stock to selected product type
-                salesperson.CurrentStock.Type = productType;
-            }
-            else
-            {
-                // sets type of current stock to "none" product type
-                salesperson.CurrentStock.Type = Product.ProductType.None;
-            }
+                // new variable for product type
+                //Product.ProductType productType;
+                if (Enum.TryParse<Product.ProductType>(UppercaseFirst(Console.ReadLine()), out Product.ProductType productType))
+                {
+                    if (salesperson.CurrentStock.Contains()
+                    {
 
-            // get number of products
-            if (ConsoleValidator.TryGetIntegerFromUser(MINIMUM_BUYSELL_AMOUNT, MAXIMUM_BUYSELL_AMOUNT, MAXIMUM_ATTEMPTS, "products", out int numberOfUnits))
-            {
-                // add products to current stock
-                salesperson.CurrentStock.AddProducts(numberOfUnits);
-            }
-            else
-            {
-                ConsoleUtil.DisplayMessage("It appears you are having difficulty setting the number of products in your stock.");
-                ConsoleUtil.DisplayMessage("By default, the number of products in your inventory are now set to 0.");
-                salesperson.CurrentStock.AddProducts(0);
-                DisplayContinuePrompt();
-            }
+                    }
+                    // get number of products
+                    if (ConsoleValidator.TryGetIntegerFromUser(MINIMUM_BUYSELL_AMOUNT, MAXIMUM_BUYSELL_AMOUNT, MAXIMUM_ATTEMPTS, productType.ToString(), out int numberOfUnits))
+                    {
+                        
+                        // add product to current stock list
+                        salesperson.CurrentStock.Add(new Product(productType, numberOfUnits, false));
 
-   
+                        userResponse = ConsoleValidator.GetYesNoFromUser(MAXIMUM_ATTEMPTS, "Do you wish to continue adding products?", out maxAttemptsExceeded);
+
+                        if (maxAttemptsExceeded || userResponse == "NO")
+                        {
+                            // exit the while loop
+                            keepAdding = false;
+
+                            DisplayContinuePrompt();
+                        }
+
+
+                    }
+                    else
+                    {
+                        ConsoleUtil.DisplayMessage("It appears you are having difficulty setting the number of products in your stock.");
+                        ConsoleUtil.DisplayMessage("By default, the number of products in your inventory are now set to 0.");
+
+                        // add product to current stock list with default number of units set to 0
+                        salesperson.CurrentStock.Add(new Product(productType, 0, false));
+
+                        userResponse = ConsoleValidator.GetYesNoFromUser(MAXIMUM_ATTEMPTS, "Do you wish to continue adding products?", out maxAttemptsExceeded);
+
+                        if (maxAttemptsExceeded || userResponse == "NO")
+                        {
+                            // exit the while loop
+                            keepAdding = false;
+
+                            DisplayContinuePrompt();
+                        }
+
+                    }
+
+                }
+                else
+                {
+                    // sets type of current stock to "none" product type
+                    ConsoleUtil.DisplayMessage("It appears you are having difficulty adding products to your inventory.");
+                    ConsoleUtil.DisplayMessage("By default, your inventory will be set to none.");
+
+                    salesperson.CurrentStock.Add(new Product(Product.ProductType.None, 0, false));
+
+                    // exit while loop
+                    keepAdding = false;
+
+                    DisplayContinuePrompt();
+                }
+
+            }
+            
 
             ConsoleUtil.DisplayReset();
 
             ConsoleUtil.DisplayMessage("Your account is setup");
-            ConsoleUtil.DisplayMessage(numberOfUnits + " units of " + productType + " have been added to your inventory.");
+            //ConsoleUtil.DisplayMessage(numberOfUnits + " units of " + productType + " have been added to your inventory.");
 
             DisplayContinuePrompt();
 

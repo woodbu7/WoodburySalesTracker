@@ -11,8 +11,6 @@ namespace TheSalesTracker
         #region Fields
 
         private string _cityName;
-        //private Product.ProductType _productsSold;
-        //private Product.ProductType _productsBought;
         private int _numberOfProductsSold;
         private int _numberOfProductsBought;
 
@@ -25,18 +23,6 @@ namespace TheSalesTracker
             get { return _cityName; }
             set { _cityName = value; }
         }
-
-        //public Product.ProductType ProductsSold
-        //{
-        //    get { return _productsSold; }
-        //    set { _productsSold = value; }
-        //}
-
-        //public Product.ProductType ProductsBought
-        //{
-        //    get { return _productsBought; }
-        //   set { _productsBought = value; }
-        //}
 
         public int NumberOfProductsSold
         {

@@ -16,8 +16,8 @@ namespace TheSalesTracker
         private ConsoleView _consoleView;
         private Salesperson _salesperson;
         private bool _usingApplication;
-        private City _city;
-       // private Product product;
+        private City city;
+        private Product product;
 
         #endregion
 
@@ -35,17 +35,11 @@ namespace TheSalesTracker
             // instantiate a Salesperson object
             //
             _salesperson = new Salesperson();
-            //_salesperson.CitiesVisited = new List<City>();
 
             //
             // instantiate a ConsoleView object
             //
             _consoleView = new ConsoleView();
-
-            //
-            // instantiate new City object
-            //
-            _city = new City();
 
             //
             // begins running the application UI
@@ -76,11 +70,6 @@ namespace TheSalesTracker
             _consoleView.DisplayWelcomeScreen();
 
             //
-            // setup initial salesperson account
-            //
-            //_salesperson = _consoleView.DisplaySetupAccount();
-
-            //
             // application loop
             //
             while (_usingApplication)
@@ -99,19 +88,19 @@ namespace TheSalesTracker
                     case MenuOption.None:
                         break;
                     case MenuOption.SetupAccount:
-                        SetupAccount();
+                        city = SetupAccount();
                         break;
                     case MenuOption.Travel:
-                        _city = Travel();
+                        city = Travel();
                         break;
                     case MenuOption.Buy:
-                        Buy();
+                        //Buy();
                         break;
                     case MenuOption.Sell:
-                        Sell();
+                        //Sell();
                         break;
                     case MenuOption.DisplayInventory:
-                        DisplayInventory();
+                        //DisplayInventory();
                         break;
                     case MenuOption.DisplayCities:
                         DisplayCities();
@@ -147,13 +136,11 @@ namespace TheSalesTracker
         /// </summary>
         private City Travel()
         {
-            // instantiate new cuty object
+            // instantiate new city object
             City _city = new City();
             _city.CityName = _consoleView.DisplayGetNextCity();
             _city.NumberOfProductsBought = 0; // default value
             _city.NumberOfProductsSold = 0; // default value
-
-            //_city.CityName = cityName;
             
             //
             // do not add empty strings to list for city names
@@ -182,7 +169,7 @@ namespace TheSalesTracker
             _consoleView.DisplayAccountInfo(_salesperson);
         }
 
-        
+        /*
 
         /// <summary>
         /// buy products
@@ -193,7 +180,8 @@ namespace TheSalesTracker
             _salesperson.CurrentStock.AddProducts(numberOfUnits);
 
             // add number of units bought
-            _city.NumberOfProductsBought = _city.NumberOfProductsBought + numberOfUnits;
+            //_city.NumberOfProductsBought = _city.NumberOfProductsBought + numberOfUnits;
+            city.NumberOfProductsBought = city.NumberOfProductsBought + numberOfUnits;
         }
 
         /// <summary>
@@ -210,9 +198,11 @@ namespace TheSalesTracker
                 _consoleView.DisplayBackorderNotification(_salesperson.CurrentStock, numberOfUnits);
             }
 
-            _city.NumberOfProductsSold = _city.NumberOfProductsSold - numberOfUnits;
+            //_city.NumberOfProductsSold = _city.NumberOfProductsSold - numberOfUnits;
+            city.NumberOfProductsSold = city.NumberOfProductsSold - numberOfUnits;
         }
         
+    
         /// <summary>
         /// display inventory
         /// </summary>
@@ -221,15 +211,18 @@ namespace TheSalesTracker
             _consoleView.DisplayInventory(_salesperson.CurrentStock);
         }
 
+    */
         
 
         /// <summary>
         /// setup new user account
         /// </summary>
-        private void SetupAccount()
+        private City SetupAccount()
         {
 
-            _salesperson = _consoleView.DisplaySetupAccount();
+            _salesperson = _consoleView.DisplaySetupAccount(out City city);
+
+            return city;
 
         }
 
@@ -246,9 +239,9 @@ namespace TheSalesTracker
 
             if (saveAccountInfo && !maxAttemptsExceeded)
             {
-                CsvServices csvServices = new CsvServices(DataSettings.dataFilePathCsv);
+                XmlServices xmlServices = new XmlServices(DataSettings.dataFilePathXml);
 
-                csvServices.WriteSalespersonToDataFile(_salesperson);
+                xmlServices.WriteSalespersonToDataFile(_salesperson);
 
                 // displays the confirmation that the account have been saved
                 _consoleView.DisplayConfirmSaveAccountInfo();
@@ -277,9 +270,9 @@ namespace TheSalesTracker
 
             if (loadAccountInfo && !maxAttemptsExceeded)
             {
-                CsvServices csvServices = new CsvServices(DataSettings.dataFilePathCsv);
+                XmlServices xmlServices = new XmlServices(DataSettings.dataFilePathXml);
 
-                _salesperson = csvServices.ReadSalespersonFromDataFile();
+                _salesperson = xmlServices.ReadSalespersonFromDataFile();
 
                 _consoleView.DisplayConfirmLoadAccountInfo(_salesperson);
             }
